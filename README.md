@@ -1,2 +1,2 @@
 # NER
-Named Entity Recognition Bachelor Thesis
+Named Entity Recognition - Bachelor Thesis
