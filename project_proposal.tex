@@ -1,0 +1,75 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{apacite}
+\usepackage{graphicx}
+
+\title{Assignment 6 - Project proposal}
+\author{Ragger Jonkers - 10542604}
+
+\begin{document}
+
+\maketitle
+
+\section{Literature review}
+It is important to state the difference between certain tasks in the Named Entity Recognition (NER) domain. Most of the time NER is used as an overarching term to describe different tasks within this domain. Some papers will assume that the Named Entity extraction part works correctly, and focus more on the disambiguation part. Linking an entity to its semantic representation, e.g. a Wikipedia page \cite{hachey2011graph} is an example of a process called Named Entity Linking (NEL). Several approaches to these tasks will be looked into.
+
+
+\subsection*{Graph-Based Named Entity Linking with Wikipedia}
+Named entity linking (NEL) is similar to the widely-studied problem of word sense disambiguation (WSD), with Wikipedia articles playing the role of WordNet synsets \cite{hachey2011graph}. Candidate recall is not as good as literature suggests, because current disambiguaters are not performing well with a lot of candidates. A graph-based approach of NEL is competitive with today's (un)supervised approaches to NEL.
+
+\subsection*{A Bootstrapping Approach to Named Entity Classification Using Successive Learners}
+The Named Entity learner in the paper takes for each role such as PERSON, ORGANIZATION, LOCATION a set of seeds \cite{niu2003bootstrapping}. For example PERSON has seed terms as he/she/his/her/him/man/woman. If the context of the found entities have any linguistic/semantic relation to the seeds (using WordNet) that replace the entity in the sentence, then that entity must belong to that role. This approach gives the user the option to define his own roles.
+
+\subsection*{Design Challenges and Misconceptions in Named Entity Recognition}
+\textbf{External knowledge}\\
+This research shows that machine learning on labeled data is not required to classify certain entities \cite{ratinov2009design}. A simple lookup in a dictionary is sufficient, called \textit{gazatteer matching}. High recall gazatteerd are used from wikipedia that cover almost all entities.\\\\
+The second tool for external knowledge is word clustering on unlabeled text, known as \textit{word class models}.\\\\
+\textbf{Non-local features}
+Take as example “Australia” and “The bank of Australia”. The first instance should be labeled
+as LOC, and the second as ORG. This can be solved using \textit{context aggregation features} (e.g. the longest capitilized sequence of words in the document which contains the current token)
+
+\subsection*{Unsupervised named-entity extraction from the Web: An experimental study}
+The KNOWITALL system aims to automate the tedious process of extracting large collections of
+facts (e.g., names of scientists or politicians) from the Web in an unsupervised, domain-independent,
+and scalable manner \cite{etzioni2005unsupervised}. Patterns are used in combination with phrasal structures to extract the entities.
+
+\subsection*{Named Entity Recognition using an HMM-based Chunk Tagger}
+This paper proposes a Hidden Markov Model (HMM) and an HMM-based chunk tagger, from which a named entity (NE)
+recognition (NER) system is built to recognize and classify names, times and numerical quantities \cite{zhou2002named}. Given a certain token sequence, an optimal tag sequence needs to be found. A tag consists of three parts:
+\begin{itemize}
+    \item Boundary category (index of entity word)
+    \item Category
+    \item Word feature (complex)
+\end{itemize}
+
+\subsection*{Semanticizing Search Engine Queries}
+The open-source \textit{Semanticizer} from the UvA is used to first generate candidate entities (known as mention detection), then disambiguate the generated entities using a binary classifier that labels entities as target entities \cite{graus2014semanticizing}. The \textit{Document ranker} assigns a higher score to entities of which the wikipedia pages are more similar to the context of the query. This way most unlikely candidates are thrown away.
+
+\section{Research question}
+
+\section{Method and approach}
+
+\section{Evaluation}
+
+\section{Plan}
+
+
+
+
+
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.18]{Figures/ner}
+    \caption{Concept map of NER}
+    \label{fig:ner}
+\end{figure}
+
+
+
+
+\bibliography{references}
+\bibliographystyle{apacite}
+
+\end{document}
+
+
