@@ -13,10 +13,6 @@
 \section{Literature review}
 It is important to state the difference between certain tasks in the Named Entity Recognition (NER) domain. Most of the time NER is used as an overarching term to describe different tasks within this domain. Some papers will assume that the Named Entity extraction part works correctly, and focus more on the disambiguation part. Linking an entity to its semantic representation, e.g. a Wikipedia page \cite{hachey2011graph} is an example of a process called Named Entity Linking (NEL). Several approaches to these tasks will be looked into.
 
-
-\subsection*{Graph-Based Named Entity Linking with Wikipedia}
-Named entity linking (NEL) is similar to the widely-studied problem of word sense disambiguation (WSD), with Wikipedia articles playing the role of WordNet synsets \cite{hachey2011graph}. Candidate recall is not as good as literature suggests, because current disambiguaters are not performing well with a lot of candidates. A graph-based approach of NEL is competitive with today's (un)supervised approaches to NEL.
-
 \subsection*{A Bootstrapping Approach to Named Entity Classification Using Successive Learners}
 The Named Entity learner in the paper takes for each role such as PERSON, ORGANIZATION, LOCATION a set of seeds \cite{niu2003bootstrapping}. For example PERSON has seed terms as he/she/his/her/him/man/woman. If the context of the found entities have any linguistic/semantic relation to the seeds (using WordNet) that replace the entity in the sentence, then that entity must belong to that role. This approach gives the user the option to define his own roles.
 
@@ -46,6 +42,7 @@ recognition (NER) system is built to recognize and classify names, times and num
 The open-source \textit{Semanticizer} from the UvA is used to first generate candidate entities (known as mention detection), then disambiguate the generated entities using a binary classifier that labels entities as target entities \cite{graus2014semanticizing}. The \textit{Document ranker} assigns a higher score to entities of which the wikipedia pages are more similar to the context of the query. This way most unlikely candidates are thrown away.
 
 \section{Research question}
+Looking at the most popular way of extracting named entities we can see that there is not yet a viable and clean solution to do this. By using patterns and phrasal structures of the language to find entities, makes the task incompatible with other languages for which different rules and patterns apply. How well will language independent Named Entity Linking work in comparison to existing highly-accurate implementations that make use of phrasal structures of a predefined language? Is the trade-off of flexability and compatibility worth the likely decrease in precision/accuracy/recall?
 
 \section{Method and approach}
 
