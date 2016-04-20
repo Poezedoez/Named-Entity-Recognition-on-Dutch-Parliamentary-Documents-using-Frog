@@ -8,62 +8,71 @@
 
 \begin{document}
 
+\setlength{\parindent}{0cm}
+
 \maketitle
 
+\section{Introduction}
+Let's say hundreds of lobby documents appear every month, but someone is only interested in about five of them that are about their topic interest, for example including a specific party member. Reading all these documents manually requires a lot of time. Named Entity Recognition  is a process that extracts named entities out of these documents without knowing beforehand which entities it could include. \\
+
+Simple solutions such as searching naively through every word in all the lobby documents per search query, as said, prerequisites knowledge about which names to expect. Beside the foreknowledge, only exact matches will be found and the query doesn't allow to disambiguate between entities. For example searching for 'Australia' will result in documents where the term 'Australia' is used with different meaning, such as 'The Bank of Australia', where it is about the organization entity instead of the location entity.\\
+
+This paper will describe a Hidden Markov Model approach that is able to recognize entities in dutch lobby documents and also specify the role of the entity. This way dutch lobbyists can subscribe to a particular entity and be notified when a new document contains entities of their interest.
+
 \section{Literature review}
-It is important to state the difference between certain tasks in the Named Entity Recognition (NER) domain. Most of the time NER is used as an overarching term to describe different tasks within this domain. Some papers will assume that the Named Entity extraction part works correctly, and focus more on the disambiguation part. Linking an entity to its semantic representation, e.g. a Wikipedia page \cite{hachey2011graph} is an example of a process called Named Entity Linking (NEL). Several approaches to these tasks will be looked into.
+It is important to state the difference between certain tasks in the Named Entity Recognition (NER) domain. Most of the time NER is used as an overarching term to describe different tasks within this domain. Some papers will focus more on either one. Linking an entity to its semantic representation, e.g. a Wikipedia page \cite{hachey2011graph} is an example of a process called Named Entity Linking (NEL). Although the task in this paper is most about entity recognition, the role assigment of the entities is a disambiguation task that corresponds with the NEL task, therefore several approaches to both these tasks will be looked into.\\
 
-\subsection*{A Bootstrapping Approach to Named Entity Classification Using Successive Learners}
-The Named Entity learner in the paper takes for each role such as PERSON, ORGANIZATION, LOCATION a set of seeds \cite{niu2003bootstrapping}. For example PERSON has seed terms as he/she/his/her/him/man/woman. If the context of the found entities have any linguistic/semantic relation to the seeds (using WordNet) that replace the entity in the sentence, then that entity must belong to that role. This approach gives the user the option to define his own roles.
+The Named Entity learner in \cite{niu2003bootstrapping} takes as disambiguating for each role such as PERSON, ORGANIZATION, LOCATION a set of seeds . For example PERSON has seed terms as he/she/his/her/him/man/woman. If the context of the found entities have any linguistic/semantic relation to the seeds (using WordNet) that replace the entity in the sentence, then that entity must belong to that role. This approach gives the user the option to define his own roles, as long as corresponding seeds are attached. The main problem of applying this technique is the requisite of WordNet, of which there isn't a dutch version available.\\
 
-\subsection*{Design Challenges and Misconceptions in Named Entity Recognition}
-\textbf{External knowledge}\\
-This research shows that machine learning on labeled data is not required to classify certain entities \cite{ratinov2009design}. A simple lookup in a dictionary is sufficient, called \textit{gazatteer matching}. High recall gazatteerd are used from wikipedia that cover almost all entities.\\\\
-The second tool for external knowledge is word clustering on unlabeled text, known as \textit{word class models}.\\\\
-\textbf{Non-local features}
-Take as example “Australia” and “The bank of Australia”. The first instance should be labeled
-as LOC, and the second as ORG. This can be solved using \textit{context aggregation features} (e.g. the longest capitilized sequence of words in the document which contains the current token)
+%The KNOWITALL system designed by \cite{etzioni2005unsupervised} aims to automate the tedious process of extracting large collections of
+%facts (e.g., names of scientists or politicians) from the Web in an unsupervised, domain-independent,
+%and scalable manner. Patterns are used in combination with phrasal structures to extract the entities. \\
 
-\subsection*{Unsupervised named-entity extraction from the Web: An experimental study}
-The KNOWITALL system aims to automate the tedious process of extracting large collections of
-facts (e.g., names of scientists or politicians) from the Web in an unsupervised, domain-independent,
-and scalable manner \cite{etzioni2005unsupervised}. Patterns are used in combination with phrasal structures to extract the entities.
+The open-source \textit{Semanticizer} from the UvA \cite{graus2014semanticizing} is used to first generate candidate entities from a query (known as mention detection), then disambiguate the generated entities using a binary classifier that labels entities as target entities. The \textit{Document ranker} assigns a higher score to entities of which the wikipedia pages are more similar to the context of the query. This way most unlikely candidates are thrown away. This research shows a way to sematicize queries using little context, however, for lobby documents this isn't an issue. Also we want to link documents to subscribers the other way around by first extracting entities out of the documents, then connecting these documents to the party of interest.\\
 
-\subsection*{Named Entity Recognition using an HMM-based Chunk Tagger}
-This paper proposes a Hidden Markov Model (HMM) and an HMM-based chunk tagger, from which a named entity (NE)
-recognition (NER) system is built to recognize and classify names, times and numerical quantities \cite{zhou2002named}. Given a certain token sequence, an optimal tag sequence needs to be found. A tag consists of three parts:
-\begin{itemize}
-    \item Boundary category (index of entity word)
-    \item Category
-    \item Word feature (complex)
-\end{itemize}
+The paper of \cite{zhou2002named} proposes a Hidden Markov Model (HMM) and an HMM-based chunk tagger, from which a named entity (NE)
+recognition (NER) system is built to recognize and classify names, times and numerical quantities . Given a certain token sequence, an optimal tag sequence needs to be found. A tag consists of three parts 1) Boundary category (index of entity word) 2) Class 3) Word feature
 
-\subsection*{Semanticizing Search Engine Queries}
-The open-source \textit{Semanticizer} from the UvA is used to first generate candidate entities (known as mention detection), then disambiguate the generated entities using a binary classifier that labels entities as target entities \cite{graus2014semanticizing}. The \textit{Document ranker} assigns a higher score to entities of which the wikipedia pages are more similar to the context of the query. This way most unlikely candidates are thrown away.
+The research of \cite{thede1999second} shows
+
 
 \section{Research question}
-Looking at the most popular way of extracting named entities we can see that there is not yet a viable and clean solution to do this. By using patterns and phrasal structures of the language to find entities, makes the task incompatible with other languages for which different rules and patterns apply. How well will language independent Named Entity Linking work in comparison to existing highly-accurate implementations that make use of phrasal structures of a predefined language? Is the trade-off of flexability and compatibility worth the likely decrease in precision/accuracy/recall?
+Looking at the most popular way of extracting named entities we can see that there is not yet one best way to do this. Using patterns and rules such as recognizing capatilized words as entities is comparable to machine learning approaches in terms of results \cite{niu2003bootstrapping}. How much can we improve these results by combining an HMM machine learning approach \cite{zhou2002named} with patterns or rules found in the lobby documents as features for the HMM?
 
 \section{Method and approach}
+The first thing required is to implement a POS-tagger that is able to train on the dutch CoNLL train data set.  This first implementation does not yet tag any entities, only part-of-speech. The actual Named Entity Recognizer will go over tokens (single words) that have been tagged with their POS and decide for each token if it is an entity, and if so, it will look which role to assign to it and if the entity is part of one consisting of multiple tokens. 
+
+\subsection{Part-of-Speech tagger}
+The part of speech tagger will assign the best tag sequence to a sentence based on the 1) \textbf{Transition probability} 2) \textbf{Lexical probability}. The transition probability is the probability of the current word $w_n$ to be tagged as tag $t$ given the tags of the previous words $w_0 ... w_{n-1}$. The lexical probability is the probability of the to be tagged word occurring as tag $t$, for example the probability of the lexical word 'shoe' being tagged as a noun.
+
+\subsection{Entity tagger}
+Using the tagged corpus from the previous step, it is now possible to use an HMM-tagger that tags all entities in the document along with their roles looking at several different features:\\
+\begin{itemize}
+\item Previously encountered entities for the lexical word: If the word 'Netherlands' occurred in the training data as location entity, it is more likely to be a location entity in the future too.
+\item Previously encountered entities for the POS-tag: Nouns are more often tagged as an entity, so the POS-tag can tell a lot by itself
+\item Previously encountered entities for the preceding  lexical word(s): the entity 'Amsterdam' in the sentence 'He traveled to Amsterdam' Amsterdam is more easily recognized as a location entity given the context words 'traveled to'.
+\item Previously encountered entities for the preceding POS-tag(s): 'Lord of the Rings' the term 'Rings' is more likely to be an entity if its preceding construction is 'of the', which can be captured by its POS-tags.
+\item Previously encountered entities for the preceding entity tag(s): if a person name is written as a whole, a surname tagged as a person entity can indicate that another person entity is following that token, namely the last name.  
+\item Previously encountered entities that occur in a given pattern: letters to politicians will contain certain salutation patterns ('Dear Mr. Wilders') that will be exclusive to lobby documents. These patterns can also be weighed in to decide the tag.
+\end{itemize}
+
+The tagger will loop through all the words in the document tagging every word on its way. The tags will be of the following: 1) a '0', meaning no entity is associated with the word. 2) B-PER$\mid$LOC$\mid$ORG, meaning this word is an entity on its own, or the first word of the whole entity. 3) I-PER$\mid$LOC$\mid$ORG, meaning this entity is part of an entity consisting of multiple words.
 
 \section{Evaluation}
+The POS-tagger will be evaluated using the CoNLL dataset without the entity tags. This evaluation is to make sure there isn't a large error margin based on the wrong POS-tags that the Entity Tagger will use as a feature. The Entity Tagger will be tested on the CoNLL dataset. A test set will be constructed by manually annotating hundred different lobby documents with their entities. Precision and recall performance on lobby documents can then be calculated for the Entity Tagger and compared to the CoNLL test set.
 
 \section{Plan}
+The tasks that will require the most time is building and training the POS-tagger. The Entity Tagger is more complicated, because it will use more features, but has a lot of similarity in implementation of the POS-tagger. A PERT-chart, figure \ref{fig:planning}, points out these several tasks and the order in which they should be done. The numbers between the arrows shows in which end of following eight weeks the task should be finished.
 
-
-
-
-
-\begin{figure}
+\begin{figure}[!h]
     \centering
-    \includegraphics[scale=0.18]{Figures/ner}
-    \caption{Concept map of NER}
-    \label{fig:ner}
+    \includegraphics[width=\textwidth]{Figures/planning2}
+    \caption{PERT-chart that shows task planning}
+    \label{fig:planning}
 \end{figure}
 
 
-
-
+\clearpage
 \bibliography{references}
 \bibliographystyle{apacite}
 
