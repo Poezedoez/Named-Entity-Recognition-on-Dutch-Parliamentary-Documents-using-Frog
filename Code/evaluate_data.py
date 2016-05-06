@@ -10,7 +10,10 @@ def model(text):
 def evaluate(processed, correct):
     total_tokens = len(correct)
     correct_pos = 0
+    recalled_entities = 0
+    correct_predictions = 0
     correct_entities = 0
+    total_entities = 0
     error_cases = []
     c = 0 ## line difference correction for processed text
     i = 0
@@ -30,11 +33,23 @@ def evaluate(processed, correct):
         else:
             identical = False
 
-        ## Check entity equality
+        ## Check if entity detected in processed text
+        if processed_entry[2] != 'O\n':
+            recalled_entities += 1
+
+        ## Check if entity detected in correct text
+        if correct_entry[2] != 'O\n':
+            total_entities += 1
+
+        ## Check prediction equality
         if processed_entry[2] == correct_entry[2]:
-            correct_entities += 1
+            correct_predictions += 1
         else:
             identical = False
+
+        ## Check entity equality
+        if processed_entry[2] != 'O\n' and correct_entry[2] != 'O\n' and processed_entry[2] == correct_entry[2]:
+            correct_entities += 1
 
         if not identical:
             error_cases.append([processed_entry, correct_entry])
@@ -42,10 +57,20 @@ def evaluate(processed, correct):
         i += 1
         j += 1
 
-    pos_accuracy = correct_pos/float(total_tokens)
-    entity_accuracy = correct_entities/float(total_tokens)
+    results = []
+    pos_acc = correct_pos/float(total_tokens)
+    acc = correct_predictions/float(total_tokens)
+    p = correct_entities/float(recalled_entities)
+    r = recalled_entities/float(total_entities)
+    f1 = (p*r)/(p+r)*2
+    results.append(('POS-accuracy', pos_acc))
+    results.append(('entity_accuracy', acc))
+    results.append(('entity_precision', p))
+    results.append(('entity_recall', r))
+    results.append(('F1-score', f1))
 
-    return (pos_accuracy, entity_accuracy), error_cases 
+
+    return results, error_cases 
 
 def equalize(first, second, i, j):
     """
@@ -75,10 +100,10 @@ def equalize(first, second, i, j):
 
 processed = model('data/conll/testa_reformatted.txt')
 correct = model('data/conll/ned.testa.txt')
-accuracies, error_cases = evaluate(processed, correct)
-print "The POS accuracy is:", accuracies[0]
-print "The entity accuracy (including type) is:", accuracies[1]
-print "Some examples of error cases are:"
-for i in range(0, 20):
-    print error_cases[i][0]
-    print error_cases[i][1], '\n'
+results, error_cases = evaluate(processed, correct)
+for result in results:
+    print result
+
+# for i in range(0, 20):
+#     print error_cases[i][0]
+#     print error_cases[i][1], '\n'
