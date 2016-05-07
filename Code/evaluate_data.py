@@ -14,6 +14,7 @@ def evaluate(processed, correct):
     correct_predictions = 0
     correct_entities = 0
     total_entities = 0
+    equalizations = 0
     error_cases = []
     c = 0 ## line difference correction for processed text
     i = 0
@@ -26,6 +27,7 @@ def evaluate(processed, correct):
         ## If tokens differ, find correct mapping
         if processed_entry[0] != correct_entry[0]:
             c = equalize(processed, correct, i, j)
+            equalizations += 1
 
         ## Check POS equality
         if processed_entry[1] == correct_entry[1]:
@@ -33,11 +35,11 @@ def evaluate(processed, correct):
         else:
             identical = False
 
-        ## Check if entity detected in processed text
-        if processed_entry[2] != 'O\n':
+        ## Check if relevant entity in processed text is found
+        if processed_entry[2] != 'O\n' and correct_entry[2] != 'O\n':
             recalled_entities += 1
 
-        ## Check if entity detected in correct text
+        ## Check if entity found in correct text
         if correct_entry[2] != 'O\n':
             total_entities += 1
 
@@ -63,12 +65,12 @@ def evaluate(processed, correct):
     p = correct_entities/float(recalled_entities)
     r = recalled_entities/float(total_entities)
     f1 = (p*r)/(p+r)*2
+    results.append(('equalizations', equalizations))
     results.append(('POS-accuracy', pos_acc))
     results.append(('entity_accuracy', acc))
     results.append(('entity_precision', p))
     results.append(('entity_recall', r))
     results.append(('F1-score', f1))
-
 
     return results, error_cases 
 
