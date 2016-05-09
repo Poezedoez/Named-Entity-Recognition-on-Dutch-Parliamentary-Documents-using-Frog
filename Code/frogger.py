@@ -6,9 +6,8 @@ import re
 import json
 import time
 from collections import defaultdict
-# from guppy import hpy
 
-
+@profile
 def main(data, dump):
     """
     Systematically frog a large data file containing
@@ -19,19 +18,20 @@ def main(data, dump):
     with open(data) as json_data:
         processed = 0
         for j in json_data:
-            doc = json.loads(j)
-            output = parse(doc)
-            doc_id = doc['_id']
-            storage_dict[doc_id] = {}
-            storage_dict[doc_id]['information'] = {}
-            storage_dict[doc_id]['entities'] = {}
-            save_info(doc, storage_dict[doc_id]['information'])
-            save_ne(output, storage_dict[doc_id]['entities'])
+            try:
+                doc = json.loads(j)
+                output = parse(doc)
+                doc_id = doc['_id']
+                storage_dict[doc_id] = {}
+                storage_dict[doc_id]['information'] = {}
+                storage_dict[doc_id]['entities'] = {}
+                save_info(doc, storage_dict[doc_id]['information'])
+                save_ne(output, storage_dict[doc_id]['entities'])
+            except:
+                continue
             processed += 1
             print("documents frogged so far:", processed)
-            # h = hpy()
-            # print("memory usage:", h.heap())
-            if processed == 5:
+            if processed == 5: ## temporary solution
                 break;
     
     print("--- %s seconds ---" % (time.time() - start_time))
@@ -60,7 +60,7 @@ def save_ne(sample, entity_dict):
     """
     for token in sample:
         if contains_entity(token):
-            ## Check if entity already dict
+            ## Check if entity already in dict
             entity = token['text']
             entity_type = token['ner']
             if entity not in entity_dict:
