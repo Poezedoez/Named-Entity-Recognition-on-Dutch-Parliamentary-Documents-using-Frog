@@ -1,29 +1,21 @@
-\section{Introduction}
-\label{sec:intro}
-\begin{itemize}
-\item Bevat je onderzoeksvraag (of vragen)
-\item Plaatst je vraag in de bestaande literatuur.
-\end{itemize}
+\section{Introduction} \label{sec:intro}
+Named Entity Recognition(NER) is a task of automatically finding Named Entities(NE's) such as persons, locations and organizations in text documents, as well as disambiguating between said types. Different methods have been tried over the last two decades, most of them language dependent. NER is generally applied to a specific domain for which the task is optimized, such as finding chemical NE's \cite{rocktaschel2012chemspot}. 
 
-Je onderzoeksvraag is leidend voor je hele scriptie. Alles wat je doet moet uiteindelijk terug te voeren zijn op 1 doel: het beantwoorden van die vraag. 
+In this paper I want to investigate NER in the domain of Dutch lobby documents. Lobbying can be defined as the act of attempting to influence decisions made by officials in a government, most often legislators or members of regulatory agencies. Lobby documents are for example: resolutions, \textit{kamervragen}, which is a Dutch term for describing questions asked by De Eerste Kamer (the Senate) and De Tweede Kamer (the House of Representatives) to the government. A proposed goal system that makes use of the NE's that have been found, allows parties of interest to 'subscribe' to particular entities. These parties will be notified of any new lobby documents containing these entities. 
 
-Typisch zal je het dan ook zo doen:
+A relatively new parser, Frog, can do a multitude of things in analyzing a text, but in this paper I'm going to evaluate only the part-of-speech(POS) assignment and the NER-task of this particular parser. Although this paper is focused on the NER task, POS assignment has proven to be an important feature in finding NE's, as is why the ConLL-2002 dataset contains these assigments for each word token. May the results of the NER task performed by Frog turn out sub-par, while the POS assignment also turned out bad, the latter could be an explanation.
 
-Mijn onderzoeksvraag is onderverdeeld in de volgende deelvragen:
+At first I want to look at research that has been done on this topic
 
-\begin{description}
-\item[RQ1] \ldots We   beantwoorden deze vraag  door het volgende te doen/ antwoord op de volgende vragen te vinden/ \ldots
 \begin{enumerate}
-\item Vragen op dit niveau kan je echt beantwoorden, en dat doe je in je Evaluatie sectie~\ref{sec:eva}.
+    \item What is the best way of finding Named Entities in lobby documents?
+    \begin{enumerate}
+        \item   How does Frog parser perform in finding NE's in lobby documents?  On which areas does Frog perform well? On which areas does it not do well?
+        \item How can Frog be improved for the given task?
+    \end{enumerate}
 \end{enumerate}
-\item[RQ2] \ldots
-\item[RQ3] \ldots
-\end{description}
-
-Je Evaluatie sectie~\ref{sec:eva} bevat evenveel subsecties als je deelvragen hebt. En in elke sectie beantwoord je dan die deelvraag met behulp van de vragen op het onderste niveau.
-
-In je conclusies kan je dan je hoofdvraag gaan beantwoorden op basis van al het eerder vergaarde bewijs.
 
 
 \paragraph{Overview of thesis}
-Hier geef je even kort weer wat in elke sectie staat.
+At first I want to look at research that has been done on this topic, and take a more in-depth look at the Frog parser and its components. Then I will describe my approach of evaluating the Frog parser on lobby documents and the way of doing the error analysis. This approach is followed by the results, which will form a conclusion about how well Frog is currently suited for the main task as well as how Frog can be improved for this task. A discussion of approach will conclude this paper.
+
