@@ -7,7 +7,7 @@ import json
 import time
 from collections import defaultdict
 
-@profile
+#@profile
 def main(data, dump):
     """
     Systematically frog a large data file containing
@@ -15,12 +15,13 @@ def main(data, dump):
     """
     start_time = time.time()
     storage_dict = {}
+    frogger = f.Frog(f.FrogOptions(parser=False, lemma=False, morph=False, chunking=False, mwu=True), "/etc/frog/frog.cfg")
     with open(data) as json_data:
         processed = 0
         for j in json_data:
             try:
                 doc = json.loads(j)
-                output = parse(doc)
+                output = parse(doc, frogger)
                 doc_id = doc['_id']
                 storage_dict[doc_id] = {}
                 storage_dict[doc_id]['information'] = {}
@@ -31,27 +32,23 @@ def main(data, dump):
                 continue
             processed += 1
             print("documents frogged so far:", processed)
-            if processed == 5: ## temporary solution
-                break;
     
     print("--- %s seconds ---" % (time.time() - start_time))
+    write_to_dump(storage_dict, dump)
+      
 
-    # ## Write dictionary to file
-    # with open(dump, 'w') as outfile:
-    #     json.dump(storage_dict, outfile)        
-            
+def write_to_dump(storage_dict, dump):
+    ## Write dictionary to file
+    with open(dump, 'w') as outfile:
+        json.dump(storage_dict, outfile)  
 
-    pprint(storage_dict)
-
-def parse(doc):
+def parse(doc, frogger):
     """
     Frog the given document and return the result
     as a json dict
     """
     text = doc['_source']['content']
-    frogger = f.Frog(f.FrogOptions(parser=False, lemma=False, morph=False, chunking=False, mwu=True), "/etc/frog/frog.cfg")
     output = frogger.process(text)
-
     return output
 
 def save_ne(sample, entity_dict):  
@@ -67,7 +64,7 @@ def save_ne(sample, entity_dict):
                 entity_dict[entity] = {}
             ## Check if entity type already in dict
             if entity_type not in entity_dict[entity]:
-                entity_dict[entity][entity_type] = 1
+                entity_dict[entity][entity_type] = 0
             ## Increase the count for this type
             entity_dict[entity][entity_type] += 1
 
@@ -90,7 +87,7 @@ def contains_entity(token):
 if __name__ == '__main__':
 
     p = argparse.ArgumentParser()
-    p.add_argument('-data', type=str, help='path to data file with lobby documents that needs frogging', default='data/lobby/lobby_tiny.txt')
+    p.add_argument('-data', type=str, help='path to data file with lobby documents that needs frogging', default='data/lobby/lobby_small.txt')
     p.add_argument('-dump', type=str, help='path to the dump', default='data/lobby/lobby_dump.txt')
 
     args = p.parse_args(sys.argv[1:])
