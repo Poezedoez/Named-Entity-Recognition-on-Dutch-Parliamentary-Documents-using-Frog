@@ -1,13 +1,8 @@
 \section{Related Work}
 \label{sec:rel}
+Finding NE's in a text is one task. Disambiguating the retrieved NE's on type can be seen as a task on its own \cite{buitinck2012two}. The benefit of doing NER two-staged, using a different algorithm for each stage, is mostly the option to optimize each algorithm separately. 
 
-Deze sectie bestaat uit een aantal "blokken", waarin je per blok de relevante literatuur beschrijft. 
-
-Neem alleen literatuur op die van belang is voor jouw onderzoeksvraag en deelvragen.
-
-Typisch heb je 1 blok voor je hoofdvraag en per deelvraag \textbf{RQi} een blok. 
+Frog is an expansion to TADPOLE \cite{bosch2007efficient} that can do morphosyntactic tagging and dependency parsing on Dutch texts using the memory-based learning software TiMBL \cite{daelemans2004timbl}. The modular system aims for high accuracy, fast processing and low memory usage, making it ideal to process a large amount of text. Frog has an addition of several modules including the NER module that also makes use of the same memory-based learning. To decide for an NE Frog has a dictionary which it uses to look up case-based NE's for known and unknown words. These cases also determine NE type, which means Frog does these two mentioned stages in NER together.
 
 
-\subsection{RQ1}
 
-\subsection{RQ2}
