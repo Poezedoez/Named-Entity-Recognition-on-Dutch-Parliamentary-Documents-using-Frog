@@ -1,8 +1,12 @@
-\section{Related Work}
-\label{sec:rel}
-Finding NE's in a text is one task. Disambiguating the retrieved NE's on type can be seen as a task on its own \cite{buitinck2012two}. The benefit of doing NER two-staged, using a different algorithm for each stage, is mostly the option to optimize each algorithm separately. 
+\section{Related work} \label{sec:rel}
+Finding NE's in a text is one task. Disambiguating the retrieved NE's on type can be seen as a task on its own \cite{buitinck2012two}. The benefit of doing NER two-staged, using a different algorithm for each stage, is mostly the option to optimize each algorithm separately.  
 
-Frog is an expansion to TADPOLE \cite{bosch2007efficient} that can do morphosyntactic tagging and dependency parsing on Dutch texts using the memory-based learning software TiMBL \cite{daelemans2004timbl}. The modular system aims for high accuracy, fast processing and low memory usage, making it ideal to process a large amount of text. Frog has an addition of several modules including the NER module that also makes use of the same memory-based learning. To decide for an NE Frog has a dictionary which it uses to look up case-based NE's for known and unknown words. These cases also determine NE type, which means Frog does these two mentioned stages in NER together.
+The most common way of doing NER recently is with a supervised machine learning approach with which an annotated corpus is used in the machine learning process to learn which features (e.g. syntax and context) indicate an NE's occurrence, as well as the type of the NE. This is now done as opposed to hand-written rules that would extract NE's. An unsupervised machine learning idea has also been suggested \cite{kazama2008inducing}, which doesn't require any gazetteers to be constructed or corpora to be annotated. Gazetteers are automatically formed using similarity clustering.
+
+In-depth evaluation of an ensemble of classifiers for Dutch shows that the best results are not per se achieved by combining different classifiers and classifying based on weighted votes \cite{desmet2014fine}. Optimizing a single algorithm on its used features shows better results. Generally a large training corpus is required for this, a corpus that is also part of the same domain as the goal domain to apply NER to. For Dutch, currently only the CoNLL-2002 data set is publicly available for use, which contains 301,418 tokens with annotated POS and IOB-tag\footnote{\url{https://en.wikipedia.org/wiki/Inside_Outside_Beginning}}
+
+Frog is an expansion to TADPOLE \cite{bosch2007efficient} that can tokenize, tag, lemmatize, chunk together and morphologically segment word tokens, find dependency relations, and detect NE's in Dutch texts using the memory-based learning software TiMBL \cite{daelemans2004timbl}. The modular system aims for high accuracy, fast processing and low memory usage, making it ideal to process a lot of parliamentary items. Frog has an addition of several modules including the NER module that also makes use of the same memory-based learning. To decide for an NE Frog has a gazetteer which it uses to look up case-based NE's for known and unknown words. These cases also determine NE type, which means Frog does these two mentioned stages of extracting and disambiguating as one.
+
 
 
 

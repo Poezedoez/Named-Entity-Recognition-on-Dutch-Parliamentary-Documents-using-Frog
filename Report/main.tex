@@ -1,13 +1,20 @@
-\documentclass[a4paper,pdf]{article}
+\documentclass{article}
 \usepackage{hyperref}
 \usepackage{pdfpages} % http://mirror.unl.edu/ctan/macros/latex/contrib/pdfpages/pdfpages.pdf
 \usepackage{booktabs} 
+\usepackage{apacite}
+\usepackage{multicol}
+\usepackage{geometry}
+%\geometry{a4paper,pdf, total={170mm,257mm},left=25mm, right=25mm, top=20mm}
+
 \begin{document}
 
 
+%\setlength{\columnsep}{1cm}
 
 
-\input{titlepage}
+
+% \input{titlepage}
 
 
 \pagebreak
@@ -25,26 +32,26 @@
 
 
 % Here you input all your sections in seperate files
+%\begin{multicols}{2}
+
 
 \input{introduction}
 \input{related_work}
-\input{methodology}
-\input{evaluation}
-\input{conclusions}
+% \input{methodology}
+% \input{evaluation}
+% \input{conclusions}
 
 % your refs
 
-\bibliographystyle{plain}
-\bibliography{MyThesis}
+\bibliographystyle{apacite}
+\bibliography{references}
 
 \appendix
 
 %\input{appendix}
 
-
-\section{Slides}
-
 % Example
-\includepdf[nup=2x3 , pages=-]{sargent-lecture_slides.pdf}
+% \includepdf[nup=2x3 , pages=-]{sargent-lecture_slides.pdf}
  
+%\end{multicols}
 \end{document}
