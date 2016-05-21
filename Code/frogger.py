@@ -38,7 +38,9 @@ def main(data, dump):
       
 
 def write_to_dump(storage_dict, dump):
-    ## Write dictionary to file
+    """
+    Write dictionary to file as json dump
+    """
     with open(dump, 'w') as outfile:
         json.dump(storage_dict, outfile)  
 
@@ -74,6 +76,7 @@ def save_info(sample, info_dict):
     """
     info_dict['type'] = sample['_type']
     info_dict['source'] = sample['_source']['source_name']
+    info_dict['title'] = sample['_source']['title']
 
 def contains_entity(token):
     answer = False
@@ -87,8 +90,8 @@ def contains_entity(token):
 if __name__ == '__main__':
 
     p = argparse.ArgumentParser()
-    p.add_argument('-data', type=str, help='path to data file with lobby documents that needs frogging', default='data/lobby/lobby_small.txt')
-    p.add_argument('-dump', type=str, help='path to the dump', default='data/lobby/lobby_dump.txt')
+    p.add_argument('-data', type=str, help='path to data file with lobby documents that needs frogging', default='data/lobby/lobby_test_documents.txt')
+    p.add_argument('-dump', type=str, help='path to the dump', default='data/lobby/lobby_test_predicted_dict.txt')
 
     args = p.parse_args(sys.argv[1:])
 

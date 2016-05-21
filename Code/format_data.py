@@ -1,21 +1,25 @@
 """
 Format frog input and output
+Don't try to make sense of this code;
+it's not good for your health.
 """
 import re
 
-def filter_output(frogged_text, outfile):
+def filter_output(frogged_raw):
     """
-    Format frog input by throwing away unwanted output.
+    Format frogged text by throwing away unwanted output.
     """
-    with open(frogged_text, 'r') as infile:
-        with open(outfile, 'w') as out:
-            for line in infile:
-                splitted = line.split('\t')
-                # keep token, POS-tag, and entity tag (BIO) 
-                try:
-                    out.write(splitted[1] + ' ' + splitted[4] + ' ' + splitted[6] + '\n')
-                except:
-                    continue
+    filtered_output = ''
+    lines = frogged_raw.split('\n')
+    for line in lines:
+        splitted = line.split('\t')
+        # keep token, POS-tag, and entity tag (BIO) 
+        try:
+            filtered_output += (splitted[1] + ' ' + splitted[4] + ' ' + splitted[6] + '\n')
+        except:
+            continue
+
+    return filtered_output
 
 def format_input(conll_text, outfile):
     """
@@ -39,33 +43,42 @@ def format_input(conll_text, outfile):
                 out.write('\n')
 
 ## onderstaande code is echt jammer
-def reformat(formatted_text, outfile):
+def reformat(frog_filtered):
     """
     Reformat frogged text to match exact
     format of conll-2002, including same POS_tags.
     """
-    with open(formatted_text, 'r') as infile:
-        with open(outfile, 'w') as out:
-            for line in infile:
-                if line.strip():
-                    splitted = line.split(' ')
-                    ## frog tends to chunk words together in the same line
-                    if '_' in splitted[0]:
-                        entries = split_chunk(splitted)
-                        out.write(entries)
-                    # reformat POS-tag by stripping additional info and changing type
-                    else: 
-                        old_tag = splitted[1].split('(')[0]
-                        new_tag = replace(old_tag)
-                        out.write(splitted[0] + ' ' + new_tag + ' ' + splitted[2]) 
+    formatted_output = ''
+    lines = frog_filtered.split('\n')
+    for line in lines:
+        if line.strip():
+            splitted = line.split(' ')
+            ## dechunk words if chunked on same line
+            if '_' in splitted[0]:
+                entries = split_chunk(splitted)
+                formatted_output += entries
+            # reformat POS-tag by stripping additional info and changing type
+            else: 
+                old_tag = splitted[1].split('(')[0]
+                new_tag = replace(old_tag)
+                formatted_output += (splitted[0] + ' ' + new_tag + ' ' + splitted[2] + '\n') 
+                #formatted_output += (splitted[0] + ' ' + new_tag + '\n')
+
+    return formatted_output
 
 def split_chunk(chunk):
+    """
+    Split a chunk of words
+    concatenated with '_'
+    into string of 1 word per line.
+    """
     tokens = chunk[0].split('_')
     pos = chunk[1].split('_')
     entities = chunk[2].split('_')
     entries = ''
     for i in range(0, len(tokens)):
         entries += tokens[i] + ' ' + replace(pos[i]) + ' ' + entities[i] + '\n'
+        #entries += tokens[i] + ' ' + replace(pos[i]) + '\n'
 
     return entries
 
@@ -93,6 +106,6 @@ def replace(tag):
 
 # filter_output('data/conll/testa_frogged.txt', 'data/conll/testa_filtered.txt')
 # filter_output('data/conll/testb_frogged.txt', 'data/conll/testb_filtered.txt')
-reformat('data/conll/testa_filtered.txt', 'data/conll/testa_reformatted.txt')
-reformat('data/conll/testb_filtered.txt', 'data/conll/testb_reformatted.txt')
-#reformat('data/conll/conll_frogged.txt', 'data/conll/conll_frogged_reannotated.txt')
+# reformat('data/conll/testa_filtered.txt', 'data/conll/testa_reformatted.txt')
+# reformat('data/conll/testb_filtered.txt', 'data/conll/testb_reformatted.txt')
+# reformat('data/conll/conll_frogged.txt', 'data/conll/conll_frogged_reannotated.txt')
