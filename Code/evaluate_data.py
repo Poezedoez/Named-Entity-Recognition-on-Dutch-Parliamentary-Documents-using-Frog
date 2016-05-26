@@ -10,11 +10,15 @@ def main(predicted, correct, e=0):
     """
     predicted_model = model(predicted)
     correct_model = model(correct)
-    counts, error_cases = get_counts(predicted_model, correct_model)
+    counts, error_cases, confusion = get_counts(predicted_model, correct_model)
     results = get_results(counts)
 
     for key, result in results.iteritems():
-        print key, result 
+        print key, '%.2f'%result 
+
+    for key, value in confusion.iteritems():
+        for v, count in value.iteritems():
+            print '%s predicted as %s %d times'%(key, v, count)
 
     for i in range(0, e):
         print error_cases[i][0]
@@ -37,6 +41,7 @@ def get_counts(predicted, correct):
     counts = defaultdict(int)
     counts['total_tokens'] = len(correct)
     error_cases = []
+    confusion = {}
     a = 0 ## line difference correction for predicted text
     i = 0
     j = 0
@@ -51,7 +56,7 @@ def get_counts(predicted, correct):
                 a = align(predicted, correct, i, j, counts)
 
             count_pos(predicted_entry, correct_entry, counts)
-            identical = count_ner(predicted_entry, correct_entry, counts)
+            identical, confusion = count_ner(predicted_entry, correct_entry, counts, confusion)
             
             if not identical:
                 error_cases.append([predicted_entry, correct_entry])
@@ -64,7 +69,7 @@ def get_counts(predicted, correct):
             i += 1
             j += 1
 
-    return counts, error_cases
+    return counts, error_cases, confusion
 
 def align(first, second, i, j, counts):
     """
@@ -101,7 +106,7 @@ def count_pos(predicted_entry, correct_entry, counts):
         if predicted_entry[1] == 'UNKNOWN':
             counts['unknown'] += 1
 
-def count_ner(predicted_entry, correct_entry, counts):
+def count_ner(predicted_entry, correct_entry, counts, confusion):
 
     identical = True
 
@@ -132,12 +137,16 @@ def count_ner(predicted_entry, correct_entry, counts):
 
     ## Check type specific equality
     if predicted_entry[2] != 'O\n' and correct_entry[2] != 'O\n':
-        predicted_type = predicted_entry[2].split('-')[1]
-        correct_type = correct_entry[2].split('-')[1]
+        predicted_type = predicted_entry[2].split('-')[1].rstrip()
+        correct_type = correct_entry[2].split('-')[1].rstrip()
         if predicted_type == correct_type:
             counts['correct_types'] += 1
+        ## Add to confusion matrix dict
+        if correct_type not in confusion:
+            confusion[correct_type] = defaultdict(int)
+        confusion[correct_type][predicted_type] += 1
 
-    return identical
+    return identical, confusion
 
 def get_results(counts):
     """
