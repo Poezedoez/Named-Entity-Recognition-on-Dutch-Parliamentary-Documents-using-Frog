@@ -29,10 +29,9 @@ def format_input(conll_text, outfile):
         sentences = []
         sentence = []
         for line in infile:
-            if line != '\n':
-                sample = line.split(' ')
-                sentence.append(sample[0])
-            else:
+            sample = line.split(' ')
+            sentence.append(sample[0])
+            if re.match('[.!:?]', line):
                 sentences.append(sentence)
                 sentence = []
 
@@ -51,18 +50,21 @@ def reformat(frog_filtered):
     formatted_output = ''
     lines = frog_filtered.split('\n')
     for line in lines:
-        if line.strip():
-            splitted = line.split(' ')
-            ## dechunk words if chunked on same line
-            if '_' in splitted[0]:
-                entries = split_chunk(splitted)
-                formatted_output += entries
-            # reformat POS-tag by stripping additional info and changing type
-            else: 
-                old_tag = splitted[1].split('(')[0]
-                new_tag = replace(old_tag)
-                formatted_output += (splitted[0] + ' ' + new_tag + ' ' + splitted[2] + '\n') 
-                #formatted_output += (splitted[0] + ' ' + new_tag + '\n')
+        try:
+            if line.strip():
+                splitted = line.split(' ')
+                ## dechunk words if chunked on same line
+                if '_' in splitted[0]:
+                    entries = split_chunk(splitted)
+                    formatted_output += entries
+                # reformat POS-tag by stripping additional info and changing type
+                else: 
+                    old_tag = splitted[1].split('(')[0]
+                    new_tag = replace(old_tag)
+                    formatted_output += (splitted[0] + ' ' + new_tag + ' ' + splitted[2] + '\n') 
+                    #formatted_output += (splitted[0] + ' ' + new_tag + '\n')
+        except:
+            continue
 
     return formatted_output
 
@@ -104,8 +106,4 @@ def replace(tag):
     except:
         return 'UNKNOWN'
 
-# filter_output('data/conll/testa_frogged.txt', 'data/conll/testa_filtered.txt')
-# filter_output('data/conll/testb_frogged.txt', 'data/conll/testb_filtered.txt')
-# reformat('data/conll/testa_filtered.txt', 'data/conll/testa_reformatted.txt')
-# reformat('data/conll/testb_filtered.txt', 'data/conll/testb_reformatted.txt')
-# reformat('data/conll/conll_frogged.txt', 'data/conll/conll_frogged_reannotated.txt')
+format_input('data/lobby/lobby_test.txt', 'data/lobby/lobby_test_textonly.txt')
