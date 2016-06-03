@@ -3,52 +3,34 @@
 
 
 \subsection{Description of the data}
-Data verzameling en beschrijving van de data
+The dataset is a set of lobby documents scraped from the web. Lobbying can be defined as the act of attempting to influence decisions made by officials in a government, most often legislators or members of regulatory agencies. Lobby documents are for example: resolutions, chamber inquiries, letters to the government and more. A distribution of different types can be seen in figure \ref{fig:data_dis}. The result of scraping these documents is that certain figures or itemization structures are textualized into words concatenated with itemization numbers, table entry titles or something similar. However, Frog's tokenization module will most of the time find the correct tokens.  These documents are exported as consistent JSON dicts, with for each doc corresponding meta information about the document such as the document ID, source, and type. The format can easily be read with Python. For domain reduction purposes, only parliamentary items are included in the data set. These items form the majority of the items and are in itself a mix of all types, except for the news items, in which the named entities vary greatly in domain compared to the Parliamentary Items.
 
-Hoe is de data verzameld, en hoe heb jij die data verkregen?
+\begin{tabular}{l*{6}{c}r}\label{fig:data-dis}
+Type              & Count \\
+\hline
+Parliamentary item & 131906  \\
+News item & 95261 \\
+Chamber inquiry & 38804  \\
+Voting & 20930 \\
+Chamber letter & 19828
+Agenda item & 18950  \\
+Resolutions & 4792 \\
+\end{tabular}
 
-
-Wat staat er in de data? Niet alleen maar een technisch verhaal, maar ook inhoudelijk. DE lezer moet een goed idee krijgen over de technische inhoud en wat het betekent.
-
-\pagebreak
-\subsection{Wat plotjes en tabelletjes}
-
-Zie het IPython Notebook \url{PandasAndLatex.ipynb} voor de code om vanuit pandas een poltje op te slaan en een dataframe als tabel op te slaan. Het werkt ideaal! 
-
-De interrupties van Wilders staan beschreven in Figure~\ref{fig:wilders} en Tabel~~\ref{tab:Wilders}.
-
-
-\begin{figure}
-\begin{center}
-\includegraphics[width=\linewidth]{WildersPlot.png}
-\caption{\label{fig:wilders} Aantal interrupties van Wilders in de Tweede Kamer door de tijd (periode 2012-2016).}
-\end{center}
-\end{figure}
-
-
-\pagebreak
-
-\begin{table}[h]
-\begin{footnotesize}
-\input{WildersTable}
-\end{footnotesize}
-\caption{\label{tab:Wilders} Door wie werd Wilders onderbroken en hoe vaak per debat.}
-\end{table}
-
-
-\pagebreak
 \subsection{Methods}
-Hoe je je vraag gaat beantwoorden.
+The following sections will describe the stages required to examine the suitability of Frog for doing NER on Parliamentary Items. I will first describe how Frog has been used. Then I will go over the preparation needed to evaluate Frog on the CoNLL-2002 data set and the set of Parliamentary Items. Lastly I will explain how the reclassification of entity types was performed. 
+
+\subsubsection{Frog usage}
+Frog is open-source software that can be modified or redistributed under the GNU General Public License\footnote{\url{http://www.gnu.org/copyleft/gpl.html}}. The results in this paper are acquired by running Frog through a virtual machine on Windows. All necessary dependencies of Frog, including Frog itself, are provided by the LaMachine software distribution\footnote{\url{https://proycon.github.io/LaMachine/}}. Frog can be run through Python using the python-frog binding which is also inlcuded in the virtual machine.
+
+\subsubsection{Evaluation method}
+The CoNLL-2002 data set uses the format of figure \ref{fig:conll}. Every line contains three things, each seperated by space: the token, which is an unprocessed word from a sentence, the token its corresponding part-of-speech, and the token its IOB-tag. Frog its Folia output looks similar with tab-delimited column format , but with additional information per token. To release Frog on CoNLL, the test set first has to be reformatted to its original text. This is done by removing the PoS and IOB-tags, concatenating the remaining words into their original sentences thereafter.  Frog chunks together multi-word entities and other words that are closely related on one line in the output. This will make it differ from the CoNLL output, as such the output is splitted with python using regular expressions. Now the processed text has the same line mapping per token as CoNLL.
+
+It needs to be taken into account that the annotation guidelines for the SoNar corpus differ from CoNLL. SoNar has a wider range of entity types, such as EVE for event and PRO for product. These types are annotated in CoNLL as MISC. Therefore the additional types that Frog outputs are mapped to MISC. There is also a guideline difference regarding locational adjectives, such as 'Dutch' or 'European'. CoNLL guidelines annotate such an adjective as MISC, while Frog is trained to assign LOC as type. These LOC outputs of Frog have to be reassigned to MISC as well.
+
+\subsubsection{Reclassification of entity types}
+In the case of unknown words the contextual word relations may indicate a type correctly, however, with multiple occurrences of the same unambiguous entity throughout a text, context differs from time to time. As a result an entity can be tagged correctly as a PER 90% of the time, but have an incorrect type assigned for the remaining 10%. This is expected to be resolved using \textbf{majority voting}. In the case when a certain type is dominant over a minority, this minority is reclassified as the dominant type. To retrieve information regarding the dominant types per entity, a train set of thousand parliamentary items has been processed by Frog. The total occurrences of the entity types have been counted over all documents. For each token in the test set that has been assigned to be an entity, we perform majority voting. Whether an entity type is dominant for that entity is decided based on a threshold value. When the fraction of an entity type over the total amount of entity type counts is larger than the threshold value, the type is considered dominant.
+
+Secondly, Frog's entity type knowledge is enriched by feeding it a gazetteer in the domain of parliamentary items. This gazetteer is constructed with a combination of automatic extraction of entities with Frog and manual annotation of the correct type. The automatic extraction is performed on the training set of thousand parliamentary items. The extracted entities are sorted on popularity, giving annotation  priority to the most common entities.
 
 
-Dit is de langste sectie van je scriptie. 
-
-Als iets erg technisch wordt kan je een deel naar de Appendix verplaatsen. 
-
-Probeer er een lopend verhaal van te maken.
-
-Het is heel handig dit ook weer op te delen nav je deelvragen:
-
-\subsubsection{RQ1}
-
-\subsubsection{RQ2}
