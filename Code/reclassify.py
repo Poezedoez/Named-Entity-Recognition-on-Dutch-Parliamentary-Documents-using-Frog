@@ -1,4 +1,4 @@
-vote_file = 'data/lobby/lobby_train_total_entities.txt'
+vote_file = 'data/lobby/lobby_test_total_entities.txt'
 import json
 import re
 import operator
@@ -15,34 +15,36 @@ def reclassify(frogged_raw):
             # keep token, POS-tag, and entity tag (BIO)
             token = splitted[1]
             pos = splitted[4]
-            iob = splitted[6]
-            if contains_entity(iob) and token in entities and token[0].isupper():
-                iob = vote_type(token, iob, entities)
-            reclassified_output += (token + ' ' + pos + ' ' + iob + '\n')
+            tag = splitted[6]
+            if vote_eligible(token, tag, entities):
+                tag = vote_type(token, tag, entities)
+            reclassified_output += (token + ' ' + pos + ' ' + tag + '\n')
 
     return reclassified_output
 
-def vote_type(token, iob, entities, confidence=0.7):
+def vote_type(token, tag, entities, confidence=0.7):
     counts = defaultdict(int)
-    current_iob = iob.split('-')[0]
+    iob_chain = [re.sub('-\w*', '', iob) for iob in tag.split('_')]
     total = 0
-    for t in entities[token]:
-        total += entities[token][t]
-        # entity_type = t.split('-')[1].split('_')[0]
-        counts[t] += entities[token][t]
-    if max(counts.values())/float(total) > confidence and max(counts, key=counts.get) != iob:
-        # print('voted', token, iob, 'to', current_iob + '-' + entity_type)
-        # return current_iob + '-' + entity_type
-        print('voted', token, iob, 'to', max(counts, key=counts.get))
-        return max(counts, key=counts.get)
-    return iob
+    for iob in entities[token]:
+        total += entities[token][iob]
+        type_chain = re.sub('PRO|EVE', 'MISC', re.sub('.-', '', iob)) #for iob in t.split('_')
+        counts[type_chain] += entities[token][iob]
+    if max(counts.values())/float(total) > confidence:
+        new_tag = ''
+        max_type_chain = max(counts, key=counts.get).split('_')
+        for idx, max_type in enumerate(max_type_chain):
+            if idx != len(max_type_chain)-1:
+                new_tag += (iob_chain[idx] + '-' + max_type + '_')
+            else:
+                new_tag += (iob_chain[idx] + '-' + max_type)
+        if new_tag != tag:
+            print(token, tag, new_tag)
+        return new_tag
+    return tag
 
-def contains_entity(iob):
-    answer = False
-    chunks = iob.split('_')
-    for chunk in chunks:
-        if chunk != 'O':
-            answer = True
+def vote_eligible(token, tag, entities):
+    return 'O' not in tag.split('_') and token in entities and token[0].isupper() 
 
-    return answer
+
 
