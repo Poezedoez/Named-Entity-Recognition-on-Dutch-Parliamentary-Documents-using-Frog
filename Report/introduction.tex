@@ -12,5 +12,18 @@ This is an improvement to a baseline string search, because unknown strings are 
 
 A relatively new parser, Frog\footnote{\url{https://languagemachines.github.io/frog/}}, that has been maintained, can apply a multitude of natural language processing techniques on a text. Frog will be examined thoroughly in section \ref{sec:rel}. Hitherto no scientific evaluations of the latest iteration of the system have been published. For this reason an evaluation of  the NER-task of Frog for the domain of parliamentary items has been performed and results are compared to those achieved on the CoNLL-2002 dataset, which was used in the CoNLL-2002 shared task\footnote{\url{http://www.cnts.ua.ac.be/conll2002/ner/}}. Subsequently, a method will be shown for the improvement of entity \textit{type} assignment using majority voting and a parliamentary gazetteer.
 
+I will try to answer the main question by answering the corresponding subquestions:
+\begin{enumerate}
+    \item How can the Named Entities in parliamentary items be acquired for the suggested system?
+    \begin{enumerate}
+        \item   How does Frog perform in the NER-task? 
+	\begin{enumerate}
+	\item How does Frog perform on the retrieval of entities? 
+	\item How does Frog perform on type assignment of retrieved entities?
+	\end{enumerate}
+        \item What domain specific improvements can be made?
+    \end{enumerate}
+\end{enumerate}
+
 \subsection{Overview of thesis}
 At first research that has been done on this topic, is looked into, which will provide a more in-depth look at Frog and its NER-module. Secondly, the approach of evaluating Frog on parliamentary items is described, as well as the procedure of the error analysis and how improvement of the entity type assignment was attempted. This approach is followed by the results, which will be used to form a conclusion about the suitability of Frog for the main task in addition to possible enhancements. A discussion of approach will conclude this paper.
