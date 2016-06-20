@@ -1,3 +1,8 @@
+'''
+Use this frogger to obtain CoNLL-format of 
+reclassified entity types
+'''
+
 import frog as f
 from pprint import pprint
 import sys
@@ -39,8 +44,8 @@ def parse(text, frogger):
 if __name__ == '__main__':
 
     p = argparse.ArgumentParser()
-    p.add_argument('-data', type=str, help='path to data file with lobby documents that needs frogging', default='data/lobby/lobby_test_textonly.txt')
-    p.add_argument('-dump', type=str, help='path to the dump', default='data/lobby/lobby_test_reclassified.txt')
+    p.add_argument('-data', type=str, help='path to data file with lobby documents that needs frogging', default='data/lobby/test')
+    p.add_argument('-dump', type=str, help='path to the dump', default='data/lobby/test_output')
 
     args = p.parse_args(sys.argv[1:])
 

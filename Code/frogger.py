@@ -1,3 +1,8 @@
+'''
+Use this frogger to store all entities per document in a 
+dump.
+'''
+
 import frog as f
 from pprint import pprint
 import sys
@@ -90,8 +95,8 @@ def contains_entity(token):
 if __name__ == '__main__':
 
     p = argparse.ArgumentParser()
-    p.add_argument('-data', type=str, help='path to data file with lobby documents that needs frogging', default='data/lobby/lobby_test_documents.txt')
-    p.add_argument('-dump', type=str, help='path to the dump', default='data/lobby/lobby_test_predicted_dict.txt')
+    p.add_argument('-data', type=str, help='path to data file with lobby documents that needs frogging', default='data/lobby/train_documents')
+    p.add_argument('-dump', type=str, help='path to the dump', default='data/lobby/train_entities')
 
     args = p.parse_args(sys.argv[1:])
 

@@ -41,7 +41,6 @@ def format_input(conll_text, outfile):
                     out.write(word + ' ')
                 out.write('\n')
 
-## onderstaande code is echt jammer
 def reformat(frog_filtered):
     """
     Reformat frogged text to match exact
@@ -105,5 +104,3 @@ def replace(tag):
         return replace_dict[tag]
     except:
         return 'UNKNOWN'
-
-format_input('data/lobby/lobby_test.txt', 'data/lobby/lobby_test_textonly.txt')

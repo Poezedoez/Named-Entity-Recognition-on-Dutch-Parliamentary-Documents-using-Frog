@@ -1,6 +1,9 @@
 import sys
 import argparse
 from collections import defaultdict
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 
 def main(predicted, correct, e=0):
     """
@@ -10,19 +13,26 @@ def main(predicted, correct, e=0):
     """
     predicted_model = model(predicted)
     correct_model = model(correct)
-    counts, error_cases, confusion = get_counts(predicted_model, correct_model)
+    counts, error_cases, predicted_types, correct_types = get_counts(predicted_model, correct_model)
     results = get_results(counts)
 
     for key, result in results.iteritems():
-        print key, '%.2f'%result 
+        print key, '%.3f'%result 
 
-    for key, value in confusion.iteritems():
-        for v, count in value.iteritems():
-            print '%s predicted as %s %d times'%(key, v, count)
+    # for idx, value in enumerate(predicted_types):
+    #     print predicted_types[idx], correct_types[idx]
 
     for i in range(0, e):
         print error_cases[i][0]
         print error_cases[i][1], '\n'
+
+    cm = confusion_matrix(predicted_types, correct_types, labels=["LOC", "ORG", "PER", "MISC"])
+    cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+    print(cm_normalized)
+    plt.figure()
+    plot_confusion_matrix(cm_normalized, title='Normalized confusion matrix of entity types')
+
+    plt.show()
 
 def model(path):
     """
@@ -41,7 +51,8 @@ def get_counts(predicted, correct):
     counts = defaultdict(int)
     counts['total_tokens'] = len(correct)
     error_cases = []
-    confusion = {}
+    predicted_types = []
+    correct_types = []
     a = 0 ## line difference correction for predicted text
     i = 0
     j = 0
@@ -56,7 +67,7 @@ def get_counts(predicted, correct):
                 a = align(predicted, correct, i, j, counts)
 
             count_pos(predicted_entry, correct_entry, counts)
-            identical, confusion = count_ner(predicted_entry, correct_entry, counts, confusion)
+            identical = count_ner(predicted_entry, correct_entry, counts, predicted_types, correct_types)
             
             if not identical:
                 error_cases.append([predicted_entry, correct_entry])
@@ -69,7 +80,7 @@ def get_counts(predicted, correct):
             i += 1
             j += 1
 
-    return counts, error_cases, confusion
+    return counts, error_cases, predicted_types, correct_types
 
 def align(first, second, i, j, counts):
     """
@@ -106,8 +117,7 @@ def count_pos(predicted_entry, correct_entry, counts):
         if predicted_entry[1] == 'UNKNOWN':
             counts['unknown'] += 1
 
-def count_ner(predicted_entry, correct_entry, counts, confusion):
-
+def count_ner(predicted_entry, correct_entry, counts, predicted_types, correct_types):
     identical = True
 
     ## Check if relevant entity in predicted text is found
@@ -141,12 +151,11 @@ def count_ner(predicted_entry, correct_entry, counts, confusion):
         correct_type = correct_entry[2].split('-')[1].rstrip()
         if predicted_type == correct_type:
             counts['correct_types'] += 1
-        ## Add to confusion matrix dict
-        if correct_type not in confusion:
-            confusion[correct_type] = defaultdict(int)
-        confusion[correct_type][predicted_type] += 1
+        ## Add to confusion matrix lists
+        predicted_types.append(predicted_type)
+        correct_types.append(correct_type)
 
-    return identical, confusion
+    return identical
 
 def get_results(counts):
     """
@@ -174,13 +183,24 @@ def get_results(counts):
     results['recall'] = r
     results['F1-score'] = f1
 
-    return results    
+    return results   
+
+def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues):
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(4)
+    plt.xticks(tick_marks, ["LOC", "ORG", "PER", "MISC"], rotation=45)
+    plt.yticks(tick_marks, ["LOC", "ORG", "PER", "MISC"])
+    plt.tight_layout()
+    plt.ylabel('Correct type')
+    plt.xlabel('Predicted type') 
 
 if __name__ == '__main__':
 
     p = argparse.ArgumentParser()
-    p.add_argument('-predicted', type=str, help='path to predicted test set', default='data/lobby/lobby_test_predicted.txt')
-    p.add_argument('-correct', type=str, help='path to correct test set', default='data/lobby/lobby_test.txt')
+    p.add_argument('-predicted', type=str, help='path to predicted test set', default='data/conll/conll_testa_predicted.txt')
+    p.add_argument('-correct', type=str, help='path to correct test set', default='data/conll/ned.testa.txt')
     p.add_argument('-e', type=int, help='total error cases to print', default= 0)
 
 
