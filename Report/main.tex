@@ -6,7 +6,10 @@
 \usepackage{multicol}
 \usepackage{geometry}
 \usepackage{amsmath}
+\usepackage{array,ragged2e}
 \usepackage[linesnumbered,ruled]{algorithm2e}
+\usepackage{wasysym}
+\usepackage{listings}
 %\geometry{a4paper,pdf, total={170mm,257mm},left=25mm, right=25mm, top=20mm}
 
 \begin{document}
@@ -26,7 +29,7 @@
 \pagebreak
 
 \begin{abstract}
-A dutch natural language processing system, Frog, is used to recognize entities in Dutch parliamentary items, as well is assigning a type to the retrieved entities. Its performance is evaluated by comparing results on the CoNLL-2002 test sets to a parliamentary items test set. To do so a newly annotated corpus has been constructed. The most difficult element seems to type prediction of an entity. Therefore, a type reclassification step is provided, using majority voting and a parliamentary gazetteer that contains entity-type relations. These methods have shown an improvement in type-precision, which, together with high recall, makes Frog perfectly suitable for the task. 
+A dutch natural language processing system, Frog, is used to recognize Named Entities in Dutch parliamentary items, as well is assigning a type to the retrieved Named Entities. Its performance is evaluated by comparing results on the CoNLL-2002 test sets to parliamentary items test set, for which a newly annotated corpus has been constructed. The most difficult task seems to be type prediction of a Named Entity, for which, consequently, a type reclassification step is provided, using majority voting and a parliamentary gazetteer that contains types for the most occurring Named Entities in the domain. These methods have shown an improvement in type  precision, which, together with high recall, makes Frog perfectly suitable for a suggested system that requires all occurring Named Entities per item. 
 \end{abstract}
 
 
@@ -38,20 +41,32 @@ A dutch natural language processing system, Frog, is used to recognize entities 
 
 
 \input{introduction}
+%\clearpage
 \input{related_work}
+%\clearpage
 \input{methodology}
+%\clearpage
 \input{evaluation_results}
-% \input{conclusions}
+%\clearpage
+\input{conclusions}
 
 % your refs
 
 \clearpage
+\nocite{daelemans2004timbl}
+\nocite{bosch1996morphological}
+\nocite{daelemans1999forgetting}
+\nocite{nadeau2006unsupervised}
+\nocite{zhou2002named}
+\nocite{graus2014semanticizing}
+\nocite{ratinov2009design}
+
 \bibliographystyle{apacite}
 \bibliography{references}
 
+\clearpage
 \appendix
-
-%\input{appendix}
+\input{appendix}
 
 % Example
 % \includepdf[nup=2x3 , pages=-]{sargent-lecture_slides.pdf}
