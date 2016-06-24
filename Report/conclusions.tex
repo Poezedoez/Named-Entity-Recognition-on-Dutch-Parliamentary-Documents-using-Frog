@@ -1,22 +1,26 @@
 \section{Conclusions}
 \label{sec:conc}
 Frog has turned out to be best available option in performing NER on Dutch texts.
-The high recall of 91\% on the parliamentary items test set indicates that Frog is very capable in retrieving all relevant NE's in this domain. Type assignment, however, has appeared to be substantually more difficult, yielding an overall 62\% precision. As a solution, reclassification of entity types has been proposed, and has proven to  increase overall type precision up to 66\%. This boost in type precision, using the parliamentary gazetteer as auxilliary, makes Frog even more suitable for the NER task of the suggested system, even though high recall is most benificient, considering incorrect type assignment can be circumvented by alternating the search query to include additional types (\ref{app:alt_query}). 
+The high recall of 91\% on the parliamentary items test set indicates that Frog is very capable in retrieving all relevant NE's in this domain. Type assignment, however, has appeared to be substantually more difficult, yielding an overall 62\% precision. As a solution, reclassification of entity types has been proposed, and has proven to  increase overall type precision up to 66\%. This boost in type precision, using the parliamentary gazetteer as auxilliary, makes Frog even more suitable for the NER task of the suggested system, even though high recall is most benificient, considering incorrect type assignment can be circumvented by alternating the search query to include additional types of which the procedure is shown in section \ref{app:alt_query}. 
 
 Generally high recall of entities is the most important aspect of an any NER system, because the type assignment can be done in a seperate stage and individually optimized, of which the reclassification step in section \ref{subsec:reclas} is an example.  
-A semi-automatic gazetteer can not only be constructed for parliamentary items, but for any given domain. Additionally majority voting can be carried out, which is also domain-independent. Comparable techniques for type disambiguation, such as clustering based on wikipedia pages \cite{cucerzan2007large},  allow Frog to be exported to other Dutch NER tasks.
+A semi-automatic gazetteer can not only be constructed for parliamentary items, but for any given domain. Additionally majority voting can be carried out, which is also domain-independent. Comparable techniques for type disambiguation, such as clustering based on Wikipedia pages \cite{cucerzan2007large},  allow Frog to be exported to other Dutch NER tasks.
 
 \section{Discussion of approach}
 \label{sec:disc}
-Unfamiliarity with installing different external libraries and dependencies in order to employ existing NER systems has demanded sizeable time investment. Frog, however, has been an exception due to the possibility of using a virtual machine that is furnished with all necessary dependencies and libraries. \\
-Using Python as programming language certainly has favored specific tasks such as reformatting output, reading and writing from a file, as well as string manipulation using regular expressions. Additionally, the use of JSON dictionaries to save counts and extracted entities per document -together with the provided JSON data- has facilitated data processing.
+Although, as mentioned in section \ref{sec:intro}, gazetteers are generally not conceived as an adequate ground for a classifier purposed for large-scale applications, reclassifying previously detected entities as a secondary step only demands negligible computational resources. Hence, since the time required to construct a gazetteer with extracted entities from Frog in proportion to the performance increase it offers can be considered qualitative, this reclassification procedure appears to be very helpful.
 
 While all of the tokens in the test set can be used in the determination of precision as performance measure in the PoS-task, only a fraction of the tokens (the NE's) can be used in the NER task. Therefore it seems reasonable that a larger test set is required to achieve higher performance measure assurance. Low density of NE's, of which many also occur multiple times, might not have challenged Frog to an ultimate extent. 
 
+Unfamiliarity with installing different external libraries and dependencies in order to employ existing NER systems has demanded sizeable time investment. Frog, however, has been an exception due to the possibility of using a virtual machine that is furnished with all necessary dependencies and libraries. \\
+Using Python as programming language certainly has favored specific tasks such as reformatting output, reading and writing from a file, as well as string manipulation using regular expressions. Additionally, the use of JSON dictionaries to save counts and extracted entities per document {\textendash}together with the provided JSON data\textendash has facilitated data processing.
+
+Frog itself may be improved by further expansion of the NER module. Possibly PoS tags can be added in as extra feature in the memory-based tagger. Additionally, the OpeNER module  \cite{agerri2013opener} could be incorperated into Frog. OpeNER is still in development, but is expected to classify using the same predefined categories as Frog with inclusion of the type \emph{Tourist} which will refer to hotels, restaurants, monuments etc. On top of that, coreference resolution is proposed, which aims at grouping together all the mentions in the text to an NE.
+
 \section{Acknowledgements}
 \textbf{Maarten Marx} has supervised me over the course of this bachelor thesis and given intermediate feedback\\
-\textbf{Justin van Wees} has supervised me and provided the data\\
+\textbf{Justin van Wees} has provided the data\\
 \textbf{Maarten van Gompel} has helped me with the set-up of python-frog\\
 \textbf{Ko van der Sloot} has provided me with examples and tips of how to use Frog\\
-\textbf{Antal van den Bosch} has answered some questions about the memory-based tagger of the NER-module of Frog\\
+\textbf{Antal van den Bosch} has answered some questions about the memory-based tagger of the NER module of Frog\\
 

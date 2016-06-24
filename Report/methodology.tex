@@ -1,14 +1,9 @@
-\todo{Prima!}
 \section{Methodology}
 \label{sec:meth}
-The following sections will describe the stages required to examine the suitability of Frog for doing NER on parliamentary items. Firstoff a description of the data is given in section \ref{subsec:data}. The employment of Frog is apparent in section \ref{subsec:frog_emp}. Subsection \ref{subsec:eval_prep} will then eloborate the preparation needed to evaluate Frog on the CoNLL-2002 data set and the set of parliamentary items. Lastly, from subsection \ref{subsec:reclas} can be understood how reclassification of entity types was performed. 
+The following sections will describe the stages required to examine the suitability of Frog for doing NER on parliamentary items. Firstoff, a description of the data is given in section \ref{subsec:data}. The employment of Frog is apparent in section \ref{subsec:frog_emp}. Subsection \ref{subsec:eval_prep} will then eloborate the preparation needed to evaluate Frog on the CoNLL-2002 data set and the set of parliamentary items. Lastly, from subsection \ref{subsec:reclas} can be understood how reclassification of entity types was performed. 
 
 \subsection{Description of the data}\label{subsec:data}
-
-\todo{Dit vind ik toch wel mal. Waarom noem je dit lobby documents? Kijk eens op \url{https://zoek.officielebekendmakingen.nl/zoeken/parlementaire_documenten}, daar komen ze vandaan. Noem die pagina ook. Dit zijn officiele stukken gepubliceerd door het Nederlandse parlement. Zo moet je ze noemen. Dat lobbyisten ze willen gebruiken is een heel ander verhaal. Ook al is het waar.}
-
-\todo{Ik zou ook wat zeggen over de tijdsperiode waarde documenten itkomen, desnoods alleen in de caption van je tabelletje}
-The dataset is a set of lobby documents that has been scraped from the web. Lobbying can be defined as the act of attempting to influence decisions made by officials in a government, most often legislators or members of regulatory agencies. Lobby documents are for example: resolutions, chamber inquiries, letters to the government and more. A distribution of different types can be seen in figure \ref{fig:data_dis}. The result of scraping these documents is that certain figures or itemization structures are textualized into words concatenated with itemization numbers, table entry titles or something alike. Nevertheless, Frog's tokenization module will most of the time seperate the tokens correctly.  The documents have been exported as consistent JSON dicts (a sample can be seen in figure \ref{fig:data_form}) with for each document its corresponding meta information such as its ID, source, and type. The content of the item in the figure has been omitted, but that is the dict entry where the complete item can be found. The JSON format can easily be read with Python. For domain reduction purposes, only parliamentary items are included in the data set. These items form the majority of the items and are a mix of all types, except for the news items, in which, undesirably, NE's vary greatly in domain compared to the parliamentary items.
+The dataset is a set of parliamentary documents published between 2015 and 2016 by the Dutch government that has been scraped from 1848\footnote{\url{https://1848.nl/}}. The documents are most often used for \emph{lobbying} which can be defined as the act of attempting to influence decisions made by officials in a government, most often legislators or members of regulatory agencies. Parliamentary documents are for example: resolutions, chamber inquiries, letters to the government and more. A distribution of different types can be seen in figure \ref{fig:data_dis}. The result of scraping these documents is that certain figures or itemization structures are textualized into words concatenated with itemization numbers, table entry titles or something alike. Nevertheless, Frog's tokenization module will most of the time seperate the tokens correctly.  The documents have been exported as consistent JSON dicts (a sample can be seen in figure \ref{fig:data_form}) with for each document its corresponding meta information such as ID, source, and type. The content of the item in the figure has been omitted, but it covers the dict entry in which the complete item can be found. The JSON format can effortlessly be read with Python. For domain reduction purposes, only parliamentary items are included in the data set. These items form the majority of the items and are a mix of all types, except for the news items, in which, undesirably, NE's vary greatly in domain compared to the parliamentary items.
 
 \begin{figure} \label{fig:data_dis}
 \centering
@@ -23,7 +18,7 @@ Chamber letter & 19828 \\
 Agenda item & 18950  \\
 Resolutions & 4792 \\
 \end{tabular}
-\caption{The distribution of the initial data}
+\caption{The distribution of the initial parliamentary documents}
 \end{figure}
 
 \begin{figure}
@@ -38,16 +33,51 @@ Frog is open-source software that can be modified or redistributed under the GNU
 
 \subsection{Evaluation preparation}\label{subsec:eval_prep}
 Differences in format and annotation guidelines had to be overcome in order to make an evaluation. 
-Additionally a golden standard for parliamentary items has been created.
+Additionally, a golden standard for parliamentary items has been created.
 \subsubsection{Format difference}
-The CoNLL-2002 data set uses the following format: $$TOKEN\,[whitespace]\,POS\,[whitespace]\,ENTITY$$ Every line contains three elements, each seperated by a whitespace: the token, which is an unprocessed word from a sentence, its corresponding part-of-speech, and the entity tag that belongs to the token. The Folia format, with tab-delimited columns instead of whitespaces looks similar, but comes without additional columns of token information. To release Frog on CoNLL, the test set first has to be reformatted to its original text. This is done by removing the PoS- and entity tags, concatenating the remaining words into their original sentences thereafter.  Frog chunks together multi-word entities and other words that are closely related on the same line in the output. This will make it differ from the CoNLL output, as is why the output is resplitted with python using regular expressions. Superfluous information is removed from each line. The ultimate processed text has the same format as CoNLL, which implies identical line mapping per token.
+The CoNLL-2002 data set uses the following format: $$TOKEN\,[whitespace]\,POS\,[whitespace]\,ENTITY$$ Every line contains three elements, each seperated by a whitespace: the token, which is an unprocessed word from a sentence, its corresponding part-of-speech, and the entity tag that belongs to the token. The FoLiA format \cite{van2013folia}, with tab-delimited columns instead of whitespaces looks similar, but comes without additional columns of token information. To release Frog on CoNLL, the test set first has to be reformatted to its original text. This is done by removing the PoS- and entity tags, concatenating the remaining words into their original sentences thereafter.  Frog chunks together multi-word entities and other words that are closely related on the same line in the output. This will make it differ from the CoNLL output, as is why the output is resplitted with python using regular expressions. Superfluous information is removed from each line. The ultimate processed text has the same format as CoNLL, which implies identical line mapping per token.
 
 \subsubsection{Guideline difference}
-It needs to be considered that the annotation guidelines for the SoNaR corpus, on which Frog is trained, differ from CoNLL. SoNaR has a wider range of entity types, with addition of EVE for event and PRO for product. These types are annotated in CoNLL as MISC. Therefore these additional types have been mapped to MISC. There is also a guideline difference regarding locational adjectives, such as 'Dutch' or 'European'. CoNLL guidelines\footnote{\url{http://www.cnts.ua.ac.be/conll2003/ner/annotation.txt}} state to annotate such an adjective as MISC, while Frog is trained to assign LOC as type. These LOC outputs of Frog have been reassigned to MISC as well.
+It needs to be considered that the annotation guidelines for the SoNaR corpus\footnote{\url{http://www.lt3.ugent.be/media/uploads/publications/2009/AnnotatierichtlijnenNE20091019.pdf}}, on which Frog is trained, differ from CoNLL. SoNaR has a wider range of entity types, with addition of EVE for event and PRO for product. These types are annotated in CoNLL as MISC. Therefore these additional types have been mapped to MISC. There is also a guideline difference regarding locational adjectives, such as 'Dutch' or 'European'. CoNLL guidelines\footnote{\url{http://www.cnts.ua.ac.be/conll2003/ner/annotation.txt}} state to annotate such an adjective as MISC, while Frog is trained to assign LOC as type. These LOC outputs of Frog have been reassigned to MISC as well.
 
-\subsubsection{Parliamentary items: golden standard}
-\todo{Graag wat meer informatie: bijvoorbeeld hoeveel entities van elk type, hoeveel entities van elke lengte (aantal tokens), etc, En geef wat voorbeelden: bijvoorbeeld de top meeste voorkomende. Maak het wat minder droog op die manier.}
-A test set of 35.338 tokens has been constructed as a golden standard to compare Frog-processed parliamentary items to. As basis, Frog output of the tokens used for the golden standard set is formatted the same as CoNLL, keeping PoS as determined by Frog. All entity tags are changed to \textit{O} beforehand to prevent bias in the annotation process. Subsequently, all entity tags have been manually assigned pursuing the CoNLL annotation guidelines. This golden standard is publicly available for download\footnote{$^{soon}$}. 
+\subsubsection{Parliamentary items: Golden Standard}
+
+\begin{figure}
+\begin{center}
+\begin{tabular}{l|rr}
+& CoNLL & Golden \\\hline
+LOC & 543 & 101 \\
+ORG & 1082 & 628 \\
+PER & 1126 & 370 \\
+MISC & 963 & 415 \\\hline
+TOTAL & 3714 & 1514 
+\end{tabular}
+\end{center}
+\caption{Type occurrences in the CoNLL and Golden Standard set}
+\label{fig:type_occ}
+\end{figure}
+
+A test set of 35,338 tokens has been constructed as a golden standard to compare Frog-processed parliamentary items to. The most common occurring entities are found in figure \ref{fig:ne_occ}. As basis, Frog output of the tokens used for the Golden Standard set is formatted identical to CoNLL, keeping PoS as determined by Frog. All entity tags are changed to \textit{O} beforehand to prevent bias in the annotation process. Subsequently, all entity tags have been manually assigned pursuing the CoNLL annotation guidelines. Even though the size of the Golden Standard is equal to that of CoNLL-2002 \textit{ned.testa}\footnote{\url{http://www.cnts.ua.ac.be/conll2002/ner/data/ned.testa}}, a substantually smaller amount of entities is present as is revealed in figure \ref{fig:type_occ}. This Golden Standard set is publicly available for download\footnote{\url{https://github.com/Poezedoez/NER/blob/master/Code/data/lobby/golden_standard}}. 
+
+\begin{figure}
+\begin{center}
+\begin{tabular}{l|r}
+NE & Count \\\hline
+Kamer & 57\\
+Comissie & 42\\
+Nederland & 41 \\
+Minister & 38 \\
+EU & 29 \\
+Staten-Generaal & 24 \\
+Europese & 21 \\
+Nederlandse & 20 \\
+Hoogers & 19 \\
+Schiphol & 16 \\
+\end{tabular}
+\caption{Ten most occurring NE's in the Golden Standard set}
+\label{fig:ne_occ}
+\end{center}
+\end{figure}
 
 \subsection{Reclassification of entity types}\label{subsec:reclas}
 Reclassification of entity types has been done in two steps. Majority voting is only applicable when the gazetteer step has had no success.
@@ -59,17 +89,18 @@ Firstly, all found entities are re-evaluated by search in a gazetteer in the dom
 \item The size of the training set 
 \item The relevance of the training set. 
 \end{enumerate}
+The amount of entries in the gazetteer has been kept modest by only including the three hundred most common entities. 
 It needs to be acknowledged that entities that do not appear in the gazetteer cannot be reclassified in this step.
 
 \subsubsection{Majority voting}
-In the case of unknown words the contextual word relations may indicate a type correctly, however, with multiple occurrences of the same entity throughout a text, context differs from time to time. As a result an unambiguous entity can be tagged correctly as a PER 90\% of the time, but have an incorrect type assigned for the remaining 10\%. This is expected to be resolved using majority voting. In the case where a certain type is dominant over a minority, this minority is reclassified as the dominant type. To retrieve information regarding the dominant types per entity, a train set of thousand parliamentary items has been processed by Frog. The total occurrences of the entity types have been counted over all documents. For each token in the test set that has been assigned an entity tag, majority voting has been applied. Whether an entity type is dominant for that entity is decided based on a threshold value. When the fraction of an entity type over the total amount of entity type counts is larger than the threshold value, the type is considered dominant. The formula for majority voting, as well a the complete reclassification procedure in pseudocode is apparent in algorithm \ref{alg:pseudo}.
+In the case of unknown words the contextual word relations may indicate a type correctly, however, with multiple occurrences of the same entity throughout a text, context differs from time to time. As a result an unambiguous entity can be tagged correctly as a PER 90\% of the time, but have an incorrect type assigned for the remaining 10\%. This is expected to be resolved using majority voting. In the case where a certain type is dominant over a minority, this minority is reclassified as the dominant type. To retrieve information regarding the dominant types per entity, a thousand parliamentary items, including items in the test set, have been processed by Frog. The total occurrences of the entity types have been counted over all documents. For each token in the test set that has been assigned an entity tag, majority voting has been applied. Whether an entity type is dominant for that entity is decided based on a threshold value. When the fraction of an entity type over the total amount of entity type counts is larger than the threshold value, the type is considered dominant. The formula for majority voting, as well a the complete reclassification procedure in pseudocode is apparent in algorithm \ref{alg:pseudo}.
 
 \begin{algorithm} \label{alg:pseudo}
     \SetKwInOut{Input}{Input}
     \SetKwInOut{Output}{Output}
 
     \underline{reclassify} $(frogged\_file, vote\_file, gazetteer\_file)$\;
-    \Input{Three files (path) each containing: the output of the Frogged text in folia-XML format, a dict of the counts for each type per entity, a dict of entities and their correct type}
+    \Input{Three files (path) each containing: the output of the Frogged text in FoLiA-XML format, a dict of the counts for each type per entity, a dict of entities and their correct type}
     \Output{CoNLL format with reclassified types}
     treshold $\leftarrow$ 0.7\\
     type\_counts $\leftarrow$ load(vote\_file)\\

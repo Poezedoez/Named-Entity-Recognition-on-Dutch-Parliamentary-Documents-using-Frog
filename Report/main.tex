@@ -3,24 +3,17 @@
 \usepackage{pdfpages} % http://mirror.unl.edu/ctan/macros/latex/contrib/pdfpages/pdfpages.pdf
 \usepackage{booktabs} 
 \usepackage{apacite}
-\usepackage{multicol}
 \usepackage{geometry}
 \usepackage{amsmath}
 \usepackage{array,ragged2e}
 \usepackage[linesnumbered,ruled]{algorithm2e}
 \usepackage{wasysym}
 \usepackage{listings}
-%\geometry{a4paper,pdf, total={170mm,257mm},left=25mm, right=25mm, top=20mm}
+\usepackage{times}
 
 \begin{document}
 
-
-%\setlength{\columnsep}{1cm}
-
-
-
 \input{titlepage}
-
 
 \pagebreak
 
@@ -29,47 +22,31 @@
 \pagebreak
 
 \begin{abstract}
-A dutch \todo{Dutch?} natural language processing system, Frog, is used to recognize Named Entities in Dutch parliamentary items, as well is assigning a type to the retrieved Named Entities. Its performance is evaluated by comparing results on the CoNLL-2002 test sets to parliamentary items test set, for which a newly annotated corpus has been constructed. The most difficult task seems to be type prediction of a Named Entity, for which, consequently, a type reclassification step is provided, using majority voting and a parliamentary gazetteer that contains types for the most occurring Named Entities in the domain. These methods have shown an improvement in type  precision, which, together with high recall, makes Frog perfectly suitable for a suggested system \todo{Wat bedoel je daarmee?} that requires all occurring Named Entities per item. 
+A Dutch natural language processing system, Frog, is used to recognize named entities in Dutch parliamentary documents, as well is assigning a type to the retrieved named entities. Its performance is evaluated by comparing results on the CoNLL-2002 test sets to the parliamentary documents test set, for which a newly annotated corpus has been constructed. The most difficult task seems to be type prediction of a named entity, for which, consequently, a type reclassification step is provided, in which majority voting and a parliamentary gazetteer that contains types for the most occurring named entities in the domain is used. These methods have shown an improvement in type precision, which, together with high recall, makes Frog perfectly suitable for a suggested query-based system that requires all occurring named entities per document. 
 \end{abstract}
-
 
 \pagebreak
 
-
-% Here you input all your sections in seperate files
-%\begin{multicols}{2}
-
-
 \input{introduction}
-%\clearpage
+
 \input{related_work}
-%\clearpage
+
 \input{methodology}
-%\clearpage
+
 \input{evaluation_results}
-%\clearpage
+
 \input{conclusions}
 
-% your refs
-
 \clearpage
-\nocite{daelemans2004timbl}
-\nocite{bosch1996morphological}
-\nocite{daelemans1999forgetting}
-\nocite{nadeau2006unsupervised}
-\nocite{zhou2002named}
-\nocite{graus2014semanticizing}
-\nocite{ratinov2009design}
+
+\nocite{*}
 
 \bibliographystyle{apacite}
 \bibliography{references}
 
 \clearpage
+
 \appendix
 \input{appendix}
 
-% Example
-% \includepdf[nup=2x3 , pages=-]{sargent-lecture_slides.pdf}
- 
-%\end{multicols}
 \end{document}

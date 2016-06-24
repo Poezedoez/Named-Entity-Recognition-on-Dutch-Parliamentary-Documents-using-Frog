@@ -1,6 +1,6 @@
 \section{Suggested system} \label{app:sug_sys}
 \subsection{System overview}
-The system in mind requires three variable inputs:
+The system in mind requires three variables as input:
 \begin{enumerate}
 \item The dump file obtained after running Frog with all NE's per item
 \item The original data file with the documents (because the source isn't included in the dump file)
@@ -13,6 +13,9 @@ If the company \textit{Coca-Cola} is not classified as ORG, but as a MISC instea
 However, adding another possible type to the query fixes the issue:
 $$ORG\text{:}Coca\text{-}Cola\text{+}MISC\text{:}Coca\text{-}Cola$$
 In contrast, when \textit{Coca-Cola} is not \emph{recalled}, there is no alternate query that will retrieve the NE. 
+
+\subsubsection{Unknown entities}
+On the other hand, when a specific document is not sough after, the data acquired for the system will provide a summary based on the entities that were present per document. This will allow the user to examine a specific document, which may also contain unknown entities, instead of finding the most relevant based on a search query out of several. 
 
 \begin{figure}
     \centering
